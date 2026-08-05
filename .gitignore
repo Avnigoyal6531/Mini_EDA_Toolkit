@@ -1,0 +1,11 @@
+# Executable files
+*.exe
+
+# Object files
+*.o
+
+# Temporary files
+*.tmp
+
+# Log files
+*.log
