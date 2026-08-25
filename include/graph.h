@@ -36,5 +36,6 @@ void build_graph_from_module(Graph *graph, const Module *module);
 void dfs(Graph *graph, int start);
 void bfs(Graph *graph, int start);
 void topological_sort(Graph *graph);
+int get_topological_order(Graph *graph, int order[]);
 
 #endif

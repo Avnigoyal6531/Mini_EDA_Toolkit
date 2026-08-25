@@ -300,3 +300,63 @@ void topological_sort(Graph *graph)
 
     printf("\n");
 }
+
+int get_topological_order(Graph *graph, int order[])
+{
+    int indegree[MAX_NODES] = {0};
+    int queue[MAX_NODES];
+
+    int front = 0;
+    int rear = 0;
+    int count = 0;
+
+    int i;
+    int j;
+    int current;
+    int next;
+
+    /* Calculate indegree of every node */
+    for (i = 0; i < graph->node_count; i++)
+    {
+        for (j = 0;
+             j < graph->nodes[i].connection_count;
+             j++)
+        {
+            next = graph->nodes[i].connections[j];
+            indegree[next]++;
+        }
+    }
+
+    /* Add nodes with indegree 0 */
+    for (i = 0; i < graph->node_count; i++)
+    {
+        if (indegree[i] == 0)
+        {
+            queue[rear++] = i;
+        }
+    }
+
+    /* Generate topological order */
+    while (front < rear)
+    {
+        current = queue[front++];
+
+        order[count++] = current;
+
+        for (j = 0;
+             j < graph->nodes[current].connection_count;
+             j++)
+        {
+            next = graph->nodes[current].connections[j];
+
+            indegree[next]--;
+
+            if (indegree[next] == 0)
+            {
+                queue[rear++] = next;
+            }
+        }
+    }
+
+    return count;
+}

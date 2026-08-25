@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Iinclude
 
 TARGET = eda.exe
 
-SRC = src/main.c src/parser.c src/graph.c src/ast.c
+SRC = src/main.c src/parser.c src/graph.c src/ast.c src/sta.c
 
 OBJ = $(SRC:.c=.o)
 

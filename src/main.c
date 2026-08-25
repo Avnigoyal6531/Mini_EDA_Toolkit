@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "graph.h"
 #include "ast.h"
+#include "sta.h"
 
 int main()
 {
@@ -10,6 +11,9 @@ int main()
 
     Graph graph;
     ASTModule ast;
+    STA sta;
+    int order[MAX_NODES];
+    int order_count;
 
     /* Open Verilog file */
     file = fopen("input/test_gates.v", "r");
@@ -56,6 +60,45 @@ int main()
 
     /* Perform Topological Sort */
     topological_sort(&graph);
+
+    /* Initialize Static Timing Analysis */
+    init_sta(&sta);
+
+    /* Add graph nodes to STA */
+    for (int i = 0; i < graph.node_count; i++)
+    {
+        add_sta_node(&sta,
+                 graph.nodes[i].name,
+                 graph.nodes[i].type,
+                 0.0);
+    }
+
+    /* Get topological order */
+    order_count = get_topological_order(&graph, order);
+
+    /* Perform arrival-time analysis */
+    if (order_count == graph.node_count)
+    {
+        calculate_arrival_times(&sta, &graph, order);
+
+        calculate_required_times(&sta,
+                         &graph,
+                         order,
+                         order_count);
+
+        calculate_slack(&sta);
+
+        print_sta_report(&sta);
+
+        find_critical_path(&sta,
+                   &graph,
+                   order,
+                   order_count);
+    }
+    else
+    {
+        printf("\nError: Circuit contains a cycle. STA cannot be performed.\n");
+    }
 
     return 0;
 }
