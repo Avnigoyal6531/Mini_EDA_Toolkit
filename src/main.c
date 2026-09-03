@@ -3,6 +3,7 @@
 #include "graph.h"
 #include "ast.h"
 #include "sta.h"
+#include "drc.h"
 
 int main()
 {
@@ -12,6 +13,7 @@ int main()
     Graph graph;
     ASTModule ast;
     STA sta;
+    DRC drc;
     int order[MAX_NODES];
     int order_count;
 
@@ -51,6 +53,15 @@ int main()
 
     /* Display graph */
     print_graph(&graph);
+
+    /* Initialize Design Rule Checker */
+    init_drc(&drc);
+
+    /* Perform Design Rule Checks */
+    run_drc(&drc, &graph, &current_module);
+
+    /* Display DRC report */
+    print_drc_report(&drc);
 
     /* Perform DFS starting from node 0 */
     dfs(&graph, 0);
