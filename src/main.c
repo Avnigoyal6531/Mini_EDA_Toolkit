@@ -4,6 +4,7 @@
 #include "ast.h"
 #include "sta.h"
 #include "drc.h"
+#include "optimizer.h"
 
 int main()
 {
@@ -14,11 +15,12 @@ int main()
     ASTModule ast;
     STA sta;
     DRC drc;
+    OptimizationResult optimization_result;
     int order[MAX_NODES];
     int order_count;
 
     /* Open Verilog file */
-    file = fopen("input/test_gates.v", "r");
+    file = fopen("input/double_not_test.v", "r");
 
     if (file == NULL)
     {
@@ -39,7 +41,13 @@ int main()
 
     fclose(file);
 
-    /* Build AST from parsed module */
+    /* Perform logic optimization */
+    optimize_module(&current_module, &optimization_result);
+
+    /* Display optimization report */
+    print_optimization_report(&optimization_result);
+
+    /* Build AST from optimized module */
     build_ast(&ast, &current_module);
 
     /* Display AST */
