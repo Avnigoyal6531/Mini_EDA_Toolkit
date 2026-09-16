@@ -5,6 +5,7 @@
 #include "sta.h"
 #include "drc.h"
 #include "optimizer.h"
+#include "power.h"
 
 int main()
 {
@@ -16,11 +17,12 @@ int main()
     STA sta;
     DRC drc;
     OptimizationResult optimization_result;
+    PowerReport power_report;
     int order[MAX_NODES];
     int order_count;
 
     /* Open Verilog file */
-    file = fopen("input/double_not_test.v", "r");
+    file = fopen("input/Multi_gate.v", "r");
 
     if (file == NULL)
     {
@@ -117,6 +119,36 @@ int main()
     else
     {
         printf("\nError: Circuit contains a cycle. STA cannot be performed.\n");
+    }
+        /* Initialize Power Estimation */
+    init_power_report(&power_report);
+
+    /* Add graph nodes for power estimation */
+    for (int i = 0; i < graph.node_count; i++)
+    {
+        add_power_node(&power_report,
+                       graph.nodes[i].name,
+                       graph.nodes[i].type,
+                       0.5,
+                       1.0,
+                       1.0,
+                       1000000.0);
+    }
+
+    /* Calculate estimated power */
+    calculate_power(&power_report);
+
+    /* Display power report */
+    print_power_report(&power_report);
+
+    /* Generate CSV report */
+    if (generate_power_csv(&power_report, "power_report.csv"))
+    {
+        printf("Power CSV report generated successfully.\n");
+    }
+    else
+    {
+        printf("Error: Could not generate power CSV report.\n");
     }
 
     return 0;
