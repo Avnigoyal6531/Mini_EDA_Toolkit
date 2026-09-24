@@ -7,7 +7,7 @@
 #include "optimizer.h"
 #include "power.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     FILE *file;
     char line[256];
@@ -21,8 +21,15 @@ int main()
     int order[MAX_NODES];
     int order_count;
 
+    /* Check command-line argument */
+    if (argc < 2)
+    {
+        printf("Usage: %s <verilog_file>\n", argv[0]);
+        return 1;
+    }
+
     /* Open Verilog file */
-    file = fopen("input/Multi_gate.v", "r");
+    file = fopen(argv[1], "r");
 
     if (file == NULL)
     {
